@@ -1,0 +1,17 @@
+body {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin: 2rem;
+}
+
+.form-conatainer{
+  display:  flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.inp,
+.operator {
+  margin: 5px;
+}
