@@ -1,26 +1,25 @@
-import React,{useReducer, useState,useEffect} from 'react';
+import React,{useReducer,useEffect, useState} from 'react';
 import './App.css';
-import Result from './result';
 
-const ACTIONS = {
-  ADD:'add',
-  SUBTRACT:'subtract',
-  MULTIPLY:'multiply',
-  DIVIDE:'divide'
-}
+const initialarg = {curr:0}
 
 const reducer = (state,action) => {
-  const inp1 = action.inp1
-  const inp2 = action.inp2
-  switch(action.type) {
-    case ACTIONS.ADD:
+  const inp1 = parseInt(action.inp1,10)
+  const inp2 = parseInt(action.inp2,10)
+  if (isNaN(inp1) || isNaN(inp2)) {
+    return state
+  }
+  switch(action.operator) {
+    case 'add':
       return {curr: inp1+inp2 }
-    case ACTIONS.SUBTRACT:
+    case 'subtract':
       return {curr: inp1-inp2}
-    case ACTIONS.MULTIPLY:
+    case 'multiply':
       return {curr: inp1*inp2}
-    case ACTIONS.DIVIDE:
+    case 'divide':
       return {curr:inp1/inp2}
+    case 'exponential':
+      return {curr: inp1**inp2}
     default:
       return state
   }
@@ -29,59 +28,30 @@ const reducer = (state,action) => {
 function App() {
   const [inp1,setInp1] = useState('')
   const [inp2,setInp2] = useState('')
-  const [operator, setOperator] = useState("SUM");
-  const [state,dispatch] = useReducer(reducer,{curr:0}) 
+  const [operator, setOperator] = useState('add');
+  const [state,dispatch] = useReducer(reducer,initialarg) 
 
-  // const handleInp1 = (e) => {
-  //   setInp1(e.target.value)
-  // }
-
-  // const handleInp2 = (e) => {
-  //   setInp2(e.target.value)
-  // }
-
-  // const add = (e) => {
-  //   e.preventDefault()
-  //   dispatch({type:ACTIONS.ADD})
-  //   setInp1('')
-  //   setInp2('')
-  // }
-
-  // const subtract = (e) => {
-  //   e.preventDefault()
-  //   dispatch({type:ACTIONS.SUBTRACT})
-  //   setInp1('')
-  //   setInp2('')
-  // }
-
-  // const multiply = (e) => {
-  //   e.preventDefault()
-  //   dispatch({type:ACTIONS.MULTIPLY})
-  //   setInp1('')
-  //   setInp2('')
-  // }
-
-  // const divide = (e) => {
-  //   e.preventDefault()
-  //   dispatch({type:ACTIONS.DIVIDE})
-  //   setInp1('')
-  //   setInp2('')
-  // }
   useEffect(() => {
     dispatch({ operator, inp1, inp2 });
   }, [inp1, inp2, operator]);
-  console.log(state)
+  console.log(state.curr)
   return (
     <>
-      <form className='form-container'>
-        <input className='inp'></input>
-        <button className="operator">+</button>
-        <button className="operator" >-</button>
-        <button className="operator" >*</button>
-        <button className="operator" >/</button>
-        <input className='inp'></input>
+      <h1>React Calculator</h1>
+      <form className='form-container' onSubmit={(e)=> e.preventDefault()}>
+        <input className='inp' value={inp1} onChange={(e) => setInp1(e.target.value)} type="number"></input>
+        <select value={operator} onChange={(e) => setOperator(e.target.value)}>
+          <option value='add'>+</option>
+          <option value='subtract' >-</option>
+          <option value='multiply' >*</option>
+          <option value='divide' >/</option>
+          <option value='exponential'>^</option>
+        </select>
+        <input className='inp' value={inp2} onChange={(e) => setInp2(e.target.value)} type="number"></input>
       </form>
-      <Result dispatch={dispatch} />
+      <div>
+      {state.curr}
+      </div>
     </>
   );
 }
